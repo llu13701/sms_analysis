@@ -162,7 +162,6 @@ def summary_analytical(pd_text, pd_master,file_name):
     except:
         print ("failed to analyze incoming/outgoing ratio. Maybe less than 7 days data")
 
-    
     try:
     #total words
         pd_master['total_word_by_me']=pd_master['word count by me'].rolling(7).mean()
@@ -201,7 +200,6 @@ def summary_analytical(pd_text, pd_master,file_name):
     except:
         print ("failed to count emojis. Maybe less than 7 days data")
 
-
     #count sentiment
     #pd_master['raw_sentiment']=pd_master['Response'].apply(clean_sentiment)
     try:
@@ -220,8 +218,6 @@ def summary_analytical(pd_text, pd_master,file_name):
     except:
         print ("failed to analyze holy grail conversation. Maybe less than 7 days data")
 
-        
-    
     #find topics for the holy grail:
     file_name=file_name.replace(".pdf", "_topic_analysis.csv")
     final_score=scoring_holy_grail_normal(pd_raw)
@@ -254,7 +250,6 @@ def stats_collections(direct_process=True):
         raw_data=whatapp_export_processing()
     else:   
         raw_data=pd.read_csv(file_name)
-        
         
     pd_text=raw_data[['Message Date', 'Type','Text']]
     pd_master=generate_master_summary(pd_text)
