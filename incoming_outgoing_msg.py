@@ -77,6 +77,9 @@ def count_number_of_incoming_outcoming(pd_text, to_graph=True):
         msg_count_rolling['Rolling_incoming']=msg_count_rolling['Incoming'].rolling(7).mean()
         msg_count_rolling['Rolling_outgoing']=msg_count_rolling['Outgoing'].rolling(7).mean()
         msg_count_rolling['incoming_outgoing_ratio']=msg_count_rolling['Rolling_incoming']/msg_count_rolling['Rolling_outgoing']
+        
+        msg_count_rolling.datetime = pd.to_datetime(msg_count_rolling.index)
+        msg_count_rolling.set_index('datetime', inplace=True)
 
         fig, axs = plt.subplots(2,sharex=True, squeeze=True)
         axs[0].plot(msg_count_rolling.index, msg_count_rolling.Rolling_incoming,'-b', label='send by him')

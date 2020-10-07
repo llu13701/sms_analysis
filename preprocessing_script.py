@@ -61,8 +61,12 @@ def preprocessing_script(file_name):
     
 #file_name='_chat.txt'
 
-def whatapp_export_processing(file_name, incoming_name='Louisa'):
+def whatapp_export_processing():
     """this is the whatspp direct download, file name by default is _chat.txt"""
+    
+    file_name = input("Enter the text file that you want to analysis, ending with .txt: ")
+    outgoing_name = input("Please enter your whatsapp name: ")
+    
     a_file = open(file_name, "r")
     list_of_lists = []
     for line in a_file:
@@ -87,11 +91,11 @@ def whatapp_export_processing(file_name, incoming_name='Louisa'):
     name_split=[x[0].strip() for x in second_split]
     potential_name=list(set(name_split))
     
-    scoring_similarlity=[difflib.SequenceMatcher(None,incoming_name,x).ratio() for x in potential_name]
+    scoring_similarlity=[difflib.SequenceMatcher(None,outgoing_name,x).ratio() for x in potential_name]
     outgoing_name=potential_name[scoring_similarlity.index(max(scoring_similarlity))]
     incoming_name=[x for x in potential_name if not x==outgoing_name][0]
     pd_conv['Type']=[convert_type(x, criterion=incoming_name) for x in name_split]
-
+    
     final_split=[" ".join(x).strip() for x in final_split ]
     pd_conv['Text']=final_split
     
@@ -101,4 +105,5 @@ def whatapp_export_processing(file_name, incoming_name='Louisa'):
     return pd_conv
 
 
-
+if __name__ == "__main__":
+    whatapp_export_processing()

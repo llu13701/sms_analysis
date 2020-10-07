@@ -156,48 +156,71 @@ def summary_analytical(pd_text, pd_master,file_name):
     pdf = matplotlib.backends.backend_pdf.PdfPages(file_name)
 
     # sent message ratip
-    incoming_msg_count,outgoing_msg_count,fig=count_number_of_incoming_outcoming(date_processing(pd_text), to_graph=True)
-    all_figure.append(fig)
+    try:
+        incoming_msg_count,outgoing_msg_count,fig=count_number_of_incoming_outcoming(date_processing(pd_text), to_graph=True)
+        all_figure.append(fig)
+    except:
+        print ("failed to analyze incoming/outgoing ratio. Maybe less than 7 days data")
+
+    
+    try:
     #total words
-    pd_master['total_word_by_me']=pd_master['word count by me'].rolling(7).mean()
-    pd_master['total_word_by_him']=pd_master['word count by him'].rolling(7).mean()
-    pd_master['word_rolling_ratio']=pd_master['total_word_by_him']/pd_master['total_word_by_me']
-    fig2, axs = plt.subplots(2,sharex=True, squeeze=True)
-    axs[0].plot(pd_master['Date'], pd_master['total_word_by_me'], '-b', label='send by me')
-    axs[0].plot(pd_master['Date'], pd_master['total_word_by_him'],'-r', label='send by him')
-    leg = axs[0].legend();
-    axs[0].set_title('Avg Incoming words vs Avg Outgoing words')
-    axs[1].plot(pd_master['Date'], pd_master['word_rolling_ratio'])
-    axs[1].set_title('Rolling Incoming/Outgoing Word Ratio')
-    all_figure.append(fig2)
+        pd_master['total_word_by_me']=pd_master['word count by me'].rolling(7).mean()
+        pd_master['total_word_by_him']=pd_master['word count by him'].rolling(7).mean()
+        pd_master['word_rolling_ratio']=pd_master['total_word_by_him']/pd_master['total_word_by_me']
+        fig2, axs = plt.subplots(2,sharex=True, squeeze=True)
+        axs[0].plot(pd_master['Date'], pd_master['total_word_by_me'], '-b', label='send by me')
+        axs[0].plot(pd_master['Date'], pd_master['total_word_by_him'],'-r', label='send by him')
+        leg = axs[0].legend();
+        axs[0].set_title('Avg Incoming words vs Avg Outgoing words')
+        axs[1].plot(pd_master['Date'], pd_master['word_rolling_ratio'])
+        axs[1].set_title('Rolling Incoming/Outgoing Word Ratio')
+        all_figure.append(fig2)
+    except:
+        print ("failed to analyze average word ratio. Maybe less than 7 days data")
 
     #initiator
-    pd_master['initiator_encoder']=pd_master['Initiator'].apply(encode_me_him)
-    pd_master['initiator_encoder_average']=pd_master['initiator_encoder'].rolling(7).mean()
-    fig3 = plt.figure()
-    plt.plot(pd_master['Date'], pd_master['initiator_encoder_average'])
-    plt.title('initiating history - 1: him initiating (beta version)')
-    all_figure.append(fig3)
-    
+    try:
+        pd_master['initiator_encoder']=pd_master['Initiator'].apply(encode_me_him)
+        pd_master['initiator_encoder_average']=pd_master['initiator_encoder'].rolling(7).mean()
+        fig3 = plt.figure()
+        plt.plot(pd_master['Date'], pd_master['initiator_encoder_average'])
+        plt.title('initiating history - 1: him initiating (beta version)')
+        all_figure.append(fig3)
+    except:
+        print ("failed to initialization. Maybe less than 7 days data")
+
+    try:
     #count emoji
-    pd_master['total_attachment']=pd_master['Emoji']+pd_master['Attachment']
-    pd_master['total_attachment_average']=pd_master['total_attachment'].rolling(7).sum()
-    fig4 = plt.figure()
-    plt.plot(pd_master['Date'], pd_master['total_attachment_average'])
-    plt.title('rolling 3d multimedia text by him')
-    all_figure.append(fig4)
+        pd_master['total_attachment']=pd_master['Emoji']+pd_master['Attachment']
+        pd_master['total_attachment_average']=pd_master['total_attachment'].rolling(7).sum()
+        fig4 = plt.figure()
+        plt.plot(pd_master['Date'], pd_master['total_attachment_average'])
+        plt.title('rolling 3d multimedia text by him')
+        all_figure.append(fig4)
+    except:
+        print ("failed to count emojis. Maybe less than 7 days data")
+
 
     #count sentiment
     #pd_master['raw_sentiment']=pd_master['Response'].apply(clean_sentiment)
-    fig5 = plt.figure()
-    plt.plot(pd_master['Date'], pd_master['Response'].apply(float))
-    plt.title('sentiment history - higher the better (beta version)')
-    all_figure.append(fig5)
-    
+    try:
+        fig5 = plt.figure()
+        plt.plot(pd_master['Date'], pd_master['Response'].apply(float))
+        plt.title('sentiment history - higher the better (beta version)')
+        all_figure.append(fig5)
+    except:
+        print ("failed to analyze sentiment. Maybe less than 7 days data")
+
+    try:
     #holy grail
-    pd_raw=add_block_conv(pd_text)
-    fig6=holy_grail_analysis(pd_raw, method='normal', conversation_cutoff=5, rolling_avg=10)
-    all_figure.append(fig6)
+        pd_raw=add_block_conv(pd_text)
+        fig6=holy_grail_analysis(pd_raw, method='normal', conversation_cutoff=5, rolling_avg=10)
+        all_figure.append(fig6)
+    except:
+        print ("failed to analyze holy grail conversation. Maybe less than 7 days data")
+
+        
     
     #find topics for the holy grail:
     file_name=file_name.replace(".pdf", "_topic_analysis.csv")
@@ -222,13 +245,13 @@ def summary_analytical(pd_text, pd_master,file_name):
         pdf.savefig( fig )
     pdf.close()
 
-def stats_collections(direct_process=False):
+def stats_collections(direct_process=True):
     #a simple dashboard of the past text analysis##
     file_name='Messages.csv'
     
     if direct_process==True:
-        file_name='_chat'
-        raw_data=whatapp_export_processing(file_name, incoming_name='Louisa')
+        #file_name='_chat'
+        raw_data=whatapp_export_processing()
     else:   
         raw_data=pd.read_csv(file_name)
         
@@ -242,3 +265,6 @@ def stats_collections(direct_process=False):
     pd_master.to_csv(file_name)
     file_name=file_name.replace('.csv', '')
     summary_analytical(pd_text, pd_master,file_name)
+
+if __name__ == "__main__":
+    stats_collections()
