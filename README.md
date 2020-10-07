@@ -7,4 +7,4 @@ Collecting whatsapp chat message history. For details, please refer to this link
 Step 1:
 Run the simple_stats.py and the program will prompt you enter the text file and your name. The file needs to have at least 10 days of chatting history in order to generate the summary pdf report.
 
-If you run into any questions, email me at louisa@odinask.com
+If you run into any questions, email me at luyilousia@gmail.com
