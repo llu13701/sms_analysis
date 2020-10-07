@@ -29,7 +29,8 @@ def remove_similar_sentence(cleaned_list_text,clean_text_matrix):
             try:
                 cleaned_list_text.remove(x)
             except:
-                print ("removing extra failed")
+                #print ("removing extra failed")
+                i=1
         if len(cleaned_list_text)>0:
             if checking_text==cleaned_list_text[0]:
                 cleaned_list_text.remove(checking_text)
@@ -73,7 +74,7 @@ def summary_topic(list_text):
     return topic_summary
 
 def paragraph_summary(list_text):
-    print ("summarizing text")
+    #print ("summarizing text")
     entire_text,cleaned_list_text=cleanning_remove_similar_sentence(list_text)
     
     text = entire_text.split(" ")

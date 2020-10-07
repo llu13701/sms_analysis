@@ -228,7 +228,7 @@ def summary_analytical(pd_text, pd_master,file_name):
     range_len=int(len(final_score)*0.3)
     topic_analysis_list=[]
     for i in range(0,range_len):
-        print (i)
+        #print (i)
         top_block_number=final_score.index[i]
         score=final_score.iloc[i]
         all_content=pd_raw.loc[pd_raw.block_conv==top_block_number, 'Text'].values.tolist()
