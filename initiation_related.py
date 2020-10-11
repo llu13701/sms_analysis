@@ -2,7 +2,10 @@ import difflib
 
 from nlp_script import clean_string_master, pd_echo_lib
 from text_cleanup import clean_up_phrases_no_stopwords_no_short_letters_no_numeric
+from stanza.server import CoreNLPClient
+from quer_transformer import extract_keywords_with_rake
 from next_sentence_prediction import next_sentence_prediction
+question_words = ['who', 'what', 'when', 'where', 'why', 'how', 'is', 'does', 'do', 'is', 'can', 'does', 'do', 'are']
 
 def matches(sentence, short_phrases, threshold=0.85):
     """fuzzy search to see if a substring fuzzy matches the short phrase and then just remove the substring"""
@@ -92,6 +95,52 @@ def identify_initiation_sentence(all_list_content, respond_msg):
         non_initial_score=non_initial_score+1
     return initial_score, non_initial_score
 
+
+def identify_whether_question(all_last_sentence):
+    """given a list of sentence and their id, check if they are question or  not"""
+    """obselete by using bert. but would like to keep it for future use"""
+    sentence_status=[] #their id, content and also 1 as question
+    coded_sentence=[]
+    for i in range(0, len(all_last_sentence)):
+        last_sentence=all_last_sentence[i][1]
+        if last_sentence==last_sentence:
+            if "?" in last_sentence[len(last_sentence)-3: len(last_sentence)]:
+                sentence_status.append((all_last_sentence[i][0], all_last_sentence[i][1], 1))
+                coded_sentence.append(all_last_sentence[i][0])
+            elif "www." in last_sentence.lower():
+                sentence_status.append((all_last_sentence[i][0], all_last_sentence[i][1], 0))
+                coded_sentence.append(all_last_sentence[i][0])
+            elif "http" in last_sentence.lower():
+                sentence_status.append((all_last_sentence[i][0], all_last_sentence[i][1], 0))
+                coded_sentence.append(all_last_sentence[i][0])
+            elif "!" in last_sentence[len(last_sentence)-3: len(last_sentence)]:
+                sentence_status.append((all_last_sentence[i][0], all_last_sentence[i][1], 0))
+                coded_sentence.append(all_last_sentence[i][0])
+
+            elif last_sentence.split(" ")[0].lower() in question_words:
+                sentence_status.append((all_last_sentence[i][0], all_last_sentence[i][1],1))
+                coded_sentence.append(all_last_sentence[i][0])
+    #remove all the coded ones
+    all_left_last_sentence=[x for x in all_last_sentence if not x[0] in coded_sentence ]
+    with CoreNLPClient(
+        annotators=['tokenize','ssplit','pos','lemma','ner', 'parse', 'depparse','coref'],
+        memory='32G', be_quiet=True) as client:
+            for i in range(0, len(all_left_last_sentence)):
+                last_sentence=all_left_last_sentence[i][1]
+                if last_sentence==last_sentence:
+                    ann = client.annotate(last_sentence,properties={
+                            'annotators': 'parse',
+                            'outputFormat': 'json',
+                            #'timeout': 10000,
+                            }
+        )
+
+                if ('SQ' or 'SBARQ') in ann['sentences'][len(ann['sentences'])-1]["parse"]==True:
+                    sentence_status.append((all_left_last_sentence[i][0], all_left_last_sentence[i][1],1))
+                else:
+                    sentence_status.append((all_left_last_sentence[i][0], all_left_last_sentence[i][1],0))
+
+    return sentence_status
 
 
 def count_nr_initiation_again(pd_text, all_potential_initiation, text_type='Outgoing'):
@@ -195,9 +244,8 @@ def identify_initiation_with_new_topic(initiator,initial_time_index, nr_incoming
     return new_topic
 
 def identify_potential_initiation_point(pd_text):
-    z_score_threshold=pd_text['message_diff_z_score'].quantile(.9)
-    z_all_potential_initiation=pd_text[pd_text['message_diff_z_score']>z_score_threshold].index.tolist()
-    hour_all_potential_initiation=pd_text[pd_text['message_diff']>3].index.tolist() 
+    z_all_potential_initiation=pd_text[pd_text['message_diff_z_score']>2].index.tolist()
+    hour_all_potential_initiation=pd_text[pd_text['message_diff']>1].index.tolist() 
     initial_day_index=pd_text['Message_Day'].drop_duplicates().index.tolist()
     all_potential_initiation=list(set(z_all_potential_initiation+hour_all_potential_initiation+initial_day_index))
     all_potential_initiation.sort()
