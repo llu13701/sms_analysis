@@ -208,10 +208,10 @@ def summary_analytical(pd_text, pd_master,file_name,nr_outgoing_again_Index,nr_i
     her_initiation=girl_initiation_index+nr_outgoing_again_Index
     first_conversation=pd_text.groupby(['block_conv']).first()
     first_conversation=categorization_him_me(first_conversation,him_initiation,her_initiation)
-    first_conversation_summary=first_conversation.groupby(['Message_Day']).sum()
+    first_conversation_summary=first_conversation.groupby(['Message_Day']).mean()
     fig3 = plt.figure()
     plt.plot(first_conversation_summary.index, first_conversation_summary['initiation_score'].rolling(7).mean())
-    plt.title('Rolling 7-D initiating history - the higher the better')
+    plt.title('Rolling 7-D initiating history: 1 - him initiating')
     all_figure.append(fig3)
     
     #count emoji
