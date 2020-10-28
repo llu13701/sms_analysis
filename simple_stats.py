@@ -6,15 +6,14 @@ Created on Tue Sep  1 23:27:36 2020
 @author: louisalu
 """
 
-import os
+#import os
 #os.chdir("/Users/louisalu/Documents/text/text_analyzer")
 import pandas as pd
 from matplotlib import pyplot as plt
 
 from incoming_outgoing_msg import count_total_incoming_outgoing_words, create_adjusted_sent_info, \
     message_ratio_ordered_adjusted, count_number_of_incoming_outcoming
-from initiation_related import summary_initiation_count, find_initiator_ender, identify_initiation_with_new_topic, \
-identify_potential_initiation_point
+from initiation_related import summary_initiation_count, find_initiator_ender, identify_initiation_with_new_topic
 from sentiment_analysis import bert_sentiment
 from topic_analysis import summary_topic, paragraph_summary
 
@@ -23,8 +22,7 @@ import emoji
 import matplotlib.backends.backend_pdf
 from holy_grail import add_block_conv, holy_grail_analysis, scoring_holy_grail_normal
 from preprocessing_script import whatapp_export_processing
-#import stanza
-#nlp_stanford = stanza.Pipeline('en')
+
 
 
 def time_conversion(x):
@@ -131,11 +129,12 @@ def generating_analytical(pd_day_text, pd_master, date,initial_time, initial_tim
     sentiment=str(sentiment)
     
     pd_master=pd_master.append({'Date':date, 'Start Time': initial_time, 'End Time':end_time, 'Text sent by Me':send_by_me,
-     'Text Sent by Him':send_by_him, 'raw ratio': raw_ratio, 'adjusted text ratio': adjusted_ratio,
-     'word count by me': average_outgoing_length, 'word count by him':average_incoming_length,
+     'Text Sent by partner':send_by_him, 'raw ratio': raw_ratio, 'adjusted text ratio': adjusted_ratio,
+     'word count by me': average_outgoing_length, 'word count by partner':average_incoming_length,
      'word ratio': average_incoming_length/(average_outgoing_length+0.00001),'Total Text': send_by_him+send_by_me, 
-     'Initiator':initiator , 'Ender':ender , 'initiate with new topic':new_topic, 'Attachment_him':attachment_number_him,'Attachment_her':attachment_number_her, 'Topic': topic_summary, 
-     'Emoji_him':emoji_count_him, 'Emoji_her':emoji_count_her, 'Response':sentiment}, ignore_index=True)
+     'Initiator':initiator , 'Ender':ender , 'initiate with new topic':new_topic, 'Attachment_partner':attachment_number_him,'Attachment_me':attachment_number_her, 'Topic': topic_summary, 
+     'Emoji_partner':emoji_count_him, 'Emoji_me':emoji_count_her, 'Response':sentiment}, ignore_index=True)
+    
     return pd_master
 
 
@@ -147,11 +146,10 @@ def generate_master_summary(pd_text):
     pd_text['index_holder'] = range(0, len(pd_text))
     first_conversation=pd_text.groupby(['block_conv']).first()
     all_potential_initiation=first_conversation['index_holder'].values.tolist()
-    #all_potential_initiation=identify_potential_initiation_point(pd_text)
     nr_outgoing_again_Index,nr_incoming_again_Index, guy_initiation_index,girl_initiation_index=\
     summary_initiation_count(pd_text, all_potential_initiation)
-    pd_master=pd.DataFrame(columns=['Date', 'Start Time', 'End Time', 'Text sent by Me', 'Text Sent by Him', 'raw ratio', 'adjusted text ratio','word count by me', 'word count by him', 'word ratio', 'Total Text', 'Initiator', 'Ender',
-                                    'initiate with new topic', 'Emoji_him','Emoji_her', 'Attachment_him','Attachment_her', 'Topic', 'Response'])
+    pd_master=pd.DataFrame(columns=['Date', 'Start Time', 'End Time', 'Text sent by Me', 'Text Sent by partner', 'raw ratio', 'adjusted text ratio','word count by me', 'word count by partner', 'word ratio', 'Total Text', 'Initiator', 'Ender',
+                                    'initiate with new topic', 'Emoji_partner','Emoji_me', 'Attachment_partner','Attachment_me', 'Topic', 'Response'])
     list_of_entire_text=generate_daily_text_group(pd_text)
     all_dates=pd_text['Message_Day'].drop_duplicates()
     
@@ -192,15 +190,16 @@ def summary_analytical(pd_text, pd_master,file_name,nr_outgoing_again_Index,nr_i
     all_figure.append(fig)
     #total words
     pd_master['total_word_by_me']=pd_master['word count by me'].rolling(7).mean()
-    pd_master['total_word_by_him']=pd_master['word count by him'].rolling(7).mean()
+    pd_master['total_word_by_him']=pd_master['word count by partner'].rolling(7).mean()
     pd_master['word_rolling_ratio']=pd_master['total_word_by_him']/pd_master['total_word_by_me']
     fig2, axs = plt.subplots(2,sharex=True, squeeze=True)
-    axs[0].plot(pd_master['Date'], pd_master['total_word_by_me'], '-b', label='send by me')
-    axs[0].plot(pd_master['Date'], pd_master['total_word_by_him'],'-r', label='send by him')
+    axs[0].plot(pd_master['Date'], pd_master['total_word_by_me'], '-r', label='me')
+    axs[0].plot(pd_master['Date'], pd_master['total_word_by_him'],'-b', label='partner')
     leg = axs[0].legend();
-    axs[0].set_title('Avg Incoming words vs Avg Outgoing words')
+    axs[0].set_title('Avg words by partner vs Avg words by me')
     axs[1].plot(pd_master['Date'], pd_master['word_rolling_ratio'])
-    axs[1].set_title('Rolling Incoming/Outgoing Word Ratio')
+    axs[1].set_title('Rolling Word Ratio - by Partner / by Me ')
+    fig2.autofmt_xdate()
     all_figure.append(fig2)
 
     #initiator
@@ -211,28 +210,31 @@ def summary_analytical(pd_text, pd_master,file_name,nr_outgoing_again_Index,nr_i
     first_conversation_summary=first_conversation.groupby(['Message_Day']).mean()
     fig3 = plt.figure()
     plt.plot(first_conversation_summary.index, first_conversation_summary['initiation_score'].rolling(7).mean())
-    plt.title('Rolling 7-D initiating history: 1 - him initiating')
+    plt.title('Partner Initiation of Conversation (Score)')
+    fig3.autofmt_xdate()
     all_figure.append(fig3)
     
     #count emoji
-    pd_master['total_attachment_him']=pd_master['Emoji_him']+pd_master['Attachment_him']
-    pd_master['total_attachment_her']=pd_master['Emoji_her']+pd_master['Attachment_her']
+    pd_master['total_attachment_him']=pd_master['Emoji_partner']+pd_master['Attachment_partner']
+    pd_master['total_attachment_her']=pd_master['Emoji_me']+pd_master['Attachment_me']
 
     pd_master['total_attachment_him_average']=pd_master['total_attachment_him'].rolling(7).sum()
     pd_master['total_attachment_her_average']=pd_master['total_attachment_her'].rolling(7).sum()
 
     fig4 = plt.figure()
-    plt.plot(pd_master['Date'], pd_master['total_attachment_him_average'],'-b', label='send by him' )
-    plt.plot(pd_master['Date'], pd_master['total_attachment_her_average'],'-r', label='send by me')
-    plt.title('rolling 7d multimedia')
-    leg = plt.legend();
+    plt.plot(pd_master['Date'], pd_master['total_attachment_him_average'],'-b', label='partner' )
+    plt.plot(pd_master['Date'], pd_master['total_attachment_her_average'],'-r', label='me')
+    fig4.autofmt_xdate()
+    plt.title('No. of Multimedia Sent')
+    leg = plt.legend()
     all_figure.append(fig4)
 
     #count sentiment
     #pd_master['raw_sentiment']=pd_master['Response'].apply(clean_sentiment)
     fig5 = plt.figure()
     plt.plot(pd_master['Date'], pd_master['Response'].apply(float).rolling(7).mean())
-    plt.title('sentiment history - higher the better (beta version)')
+    plt.title('Conversation Sentiment Index - higher is better (beta version)')
+    fig5.autofmt_xdate()
     all_figure.append(fig5)
     
     #holy grail
@@ -264,18 +266,19 @@ def summary_analytical(pd_text, pd_master,file_name,nr_outgoing_again_Index,nr_i
         pdf.savefig( fig )
     pdf.close()
 
-def stats_collections(direct_process=False):
+def stats_collections(direct_process=True):
     #a simple dashboard of the past text analysis##
-    file_name='Messages.csv'
-    file_name='WhatsApp - Greg.csv'
-    
+    #file_name='Messages.csv'
+
+    file_name = input("Enter your whatapp chat filename (ending in txt): ")
+    outgoing_name = input("Please enter your whatsapp name: ")
+
     if direct_process==True:
         file_name='_chat'
-        raw_data=whatapp_export_processing(file_name, incoming_name='Louisa')
+        raw_data=whatapp_export_processing(file_name, outgoing_name)
     else:   
         raw_data=pd.read_csv(file_name)
-        
-        
+
     pd_text=raw_data[['Message Date', 'Type','Text']]
     pd_master, nr_outgoing_again_Index,nr_incoming_again_Index, guy_initiation_index,girl_initiation_index=\
     generate_master_summary(pd_text)
@@ -286,3 +289,6 @@ def stats_collections(direct_process=False):
     pd_master.to_csv(file_name)
     file_name=file_name.replace('.csv', '')
     summary_analytical(pd_text, pd_master,file_name, nr_outgoing_again_Index,nr_incoming_again_Index, guy_initiation_index,girl_initiation_index)
+
+if __name__ == "__main__":
+    stats_collections()

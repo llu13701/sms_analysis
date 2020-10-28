@@ -9,8 +9,6 @@ https://towardsdatascience.com/heres-how-you-can-access-your-entire-imessage-his
 @author: louisalu
 """
 
-import ast
-import sqlite3
 import pandas as pd
 from datetime import datetime
 import difflib
@@ -23,23 +21,6 @@ difference=apple_beginninng-unix_beginninng
 
 def convert_apple_time(x):
     return datetime.fromtimestamp(x+difference).strftime('%Y-%m-%d %H:%M:%S')
-
-
-# substitute username with your username
-#file_name='imessage.db'
-def extracting_db(file_name, ex_phone_number='15555555555'):
-    """used for imessage downloaded directly from the backup file"""
-    conn = sqlite3.connect(file_name)
-    cur = conn.cursor()
-    cur.execute(" select name from sqlite_master where type = 'table' ")     
-    messages = pd.read_sql_query("select * from message", conn)
-    handles = pd.read_sql_query("select * from handle", conn)
-    messages.rename(columns={'ROWID' : 'message_id'}, inplace = True)
-    handles.rename(columns={'id' : 'phone_number', 'ROWID': 'handle_id'}, inplace = True)
-    merge_level_1 = pd.merge(messages[['text', 'handle_id', 'date','is_sent', 'message_id']],  handles[['handle_id', 'phone_number']], on ='handle_id', how='left')
-    this_convo = merge_level_1.loc[merge_level_1.phone_number == ex_phone_number , ]
-    file_name=file_name.replace(".db", ".csv")
-    this_convo.to_csv(file_name)
 
 
 def convert_type(x, criterion=0):
@@ -58,15 +39,9 @@ def preprocessing_script(file_name):
     pd_raw.columns=['Text', 'phone_number', 'Type', 'Message Date']
     pd_raw.to_csv(file_name+"_cleaned.csv")
     
-    
-#file_name='_chat.txt'
 
-def whatapp_export_processing():
+def whatapp_export_processing(file_name, outgoing_name):
     """this is the whatspp direct download, file name by default is _chat.txt"""
-    
-    file_name = input("Enter the text file that you want to analysis, ending with .txt: ")
-    outgoing_name = input("Please enter your whatsapp name: ")
-    
     a_file = open(file_name, "r")
     list_of_lists = []
     for line in a_file:
@@ -105,5 +80,4 @@ def whatapp_export_processing():
     return pd_conv
 
 
-if __name__ == "__main__":
-    whatapp_export_processing()
+

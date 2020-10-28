@@ -73,7 +73,7 @@ def holy_grail_analysis(pd_text, method='naive', conversation_cutoff=30, rolling
         final_score=final_score.sort_index()
         rolling_mean=final_score.rolling(rolling_avg).mean()
         axs[0].plot(final_score.index, final_score.values)
-        axs[0].set_title('holy grail interactive score')
+        axs[0].set_title('Holy Grail Interaction Score')
         axs[1].plot(final_score.index, rolling_mean)
-        axs[1].set_title('rolling average holy grail interactive score')
+        axs[1].set_title('Holy Grail Interaction Score (rolling avg)')
     return fig

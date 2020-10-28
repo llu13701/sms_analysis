@@ -77,17 +77,16 @@ def count_number_of_incoming_outcoming(pd_text, to_graph=True):
         msg_count_rolling['Rolling_incoming']=msg_count_rolling['Incoming'].rolling(7).mean()
         msg_count_rolling['Rolling_outgoing']=msg_count_rolling['Outgoing'].rolling(7).mean()
         msg_count_rolling['incoming_outgoing_ratio']=msg_count_rolling['Rolling_incoming']/msg_count_rolling['Rolling_outgoing']
-        
-        msg_count_rolling.datetime = pd.to_datetime(msg_count_rolling.index)
-        msg_count_rolling.set_index('datetime', inplace=True)
 
         fig, axs = plt.subplots(2,sharex=True, squeeze=True)
-        axs[0].plot(msg_count_rolling.index, msg_count_rolling.Rolling_incoming,'-b', label='send by him')
-        axs[0].plot(msg_count_rolling.index, msg_count_rolling.Rolling_outgoing,'-r', label='send by me')
+        #index_range=range(0, len(msg_count_rolling.index))
+        axs[0].plot(msg_count_rolling.index, msg_count_rolling.Rolling_incoming,'-b', label='partner')
+        axs[0].plot(msg_count_rolling.index, msg_count_rolling.Rolling_outgoing,'-r', label='me')
         leg = axs[0].legend();
-        axs[0].set_title('Avg Incoming vs Avg Outgoing')
+        axs[0].set_title('Avg Sent by Partner vs by Me (7d avg)')
         axs[1].plot(msg_count_rolling.index, msg_count_rolling.incoming_outgoing_ratio)
-        axs[1].set_title('Rolling Incoming/Outgoing Ratio')
+        fig.autofmt_xdate()
+        axs[1].set_title('Ratio - Sent by Partner / by Me (7d avg)')
 
     #print ("Overall incoming to outgoing number of msg ratio is ", incoming_msg_count/outgoing_msg_count)
     return incoming_msg_count,outgoing_msg_count, fig
