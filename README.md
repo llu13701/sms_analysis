@@ -9,7 +9,7 @@ Run the simple_stats.py and the program will prompt you enter the text file and 
 
 For a detailed overview on this project, refer to my medium article: https://medium.com/@luyilousia/improving-my-dating-life-one-text-analysis-at-a-time-a802cb8c2876
 
-Required libraries for this project:
+Required libraries for this project: <br />
 pandas <br />
 matplotlib <br />
 emoji <br />
