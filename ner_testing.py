@@ -14,7 +14,6 @@ from nlp_script import nlp_name
 
 TIMER=False
 
-
 def extract_preliminary_ner_from_sentence(tweet):
     NEA_TYPE=['CARDINAL', 'ORDINAL', 'QUANTITY', 'MONEY', 'PERCENT','TIME', 'DATE']
     tweet=tweet.translate ({ord(c): "" for c in "!@#$%^&*`~-=_+"})

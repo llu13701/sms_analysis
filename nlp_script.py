@@ -12,14 +12,11 @@ import pandas as pd
 
 import spacy
 nlp = spacy.load("en_vectors_web_lg")
-import os
-#os.chdir("/Users/louisalu/Documents/text/text_analyzer")
 pd_echo_lib=pd.read_csv("common_text.csv")
 pd_echo_lib=pd_echo_lib.fillna(0)
 
 
 import re
-import json
 nlp_name=spacy.load("en_core_web_lg")
 wiki_string='https://en.wikipedia.org/wiki/'
 

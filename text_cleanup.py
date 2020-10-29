@@ -5,26 +5,14 @@ Created on Wed Sep 18 23:08:29 2019
 
 @author: louisalu
 """
-from urllib.parse import unquote
 
-from nltk.tokenize import word_tokenize
-from nltk.stem import PorterStemmer 
+from nltk.stem import PorterStemmer
 from collections import Counter
 import re
 
-from nlp_script import total_stopword, wiki_string, clean_string_master, nlp
+from nlp_script import total_stopword
 
 ps = PorterStemmer() 
-#sym_spell=loading_symspell()
-
-
-def stemming_list_of_phrases(final_phrases):
-    new_final_phrases=list()
-    temp=[word_tokenize(phrase) for phrase in final_phrases]        
-    for x in temp:            
-      new_final_phrases.append(" ".join([ps.stem(w) for w in x]))
-  
-    return new_final_phrases
 
 def stemma_single_word(x):
     return ps.stem(x)
@@ -66,28 +54,6 @@ def flatten_lower_ner_list(ner_list):
     return ner_list
 
 
-def clean_list_of_ner(ner_list_group):
-    ner_list=flatten_lower_ner_list(ner_list_group)
-    ner_list=[clean_up_phrases_no_stopwords_no_short_letters_no_numeric(x, stemmed=False) for x in ner_list]
-    ner_list=list(set([x for x in ner_list if not x==''])) 
-    return ner_list
-
-
-def stem_a_phrase(phrase):
-# stemming a phrases
-    x_token=word_tokenize(phrase.lower())
-    new_phrase=" ".join([ps.stem(w) for w in x_token])
-    return new_phrase
-
-
-def extract_keyword_from_wikiurl(re_search_id ):
-# given wiki url, extract the wiki title, eliminate all special characters
-    wiki_keyword=re_search_id.replace(wiki_string, "")
-    wiki_keyword=unquote(wiki_keyword)
-    wiki_keyword=wiki_keyword.replace("_", " ")
-    wiki_keyword=wiki_keyword.strip()
-    return wiki_keyword
-
 #given a giant body of text, convert to tokens, take out stopwords and alsp special characters
 def convert_text_to_tokens(text_list, special_list):
     text_list=" ".join([word for word in text_list.split() if word not in total_stopword])
@@ -128,97 +94,5 @@ def remove_single_word_in_list_of_phrases(list_gram):
     return list_gram
 
 
-def lemmatization(texts):
-    output = []
-    for i in texts:
-        s = [token.lemma_ for token in nlp(i)]
-        output.append(' '.join(s))
-    return output
 
 
-
-
-
-def merge_cat_and_content_pair(wiki_page_cat_list,full_content_pair,group_wiki_list):
-    """#in a tuple structure, merge everything in the same list into one giant string"""
-    new_merged_cat=[]
-    new_merged_content=[]
-    for keyword_list in group_wiki_list:
-        new_merged_cat.append((keyword_list[0], [item for sublist in [x[1] for x in wiki_page_cat_list if x[0] in keyword_list] for item in sublist]))
-        grouped_content=[x[1] for x in full_content_pair if x[0] in keyword_list]
-        mega_content=''
-        for x in grouped_content:
-            mega_content=mega_content+x
-        new_merged_content.append((keyword_list[0], mega_content))
-    return new_merged_cat,new_merged_content
-
-
-def stem_unqiue_list(flat_list):
-    """#clean up a list of items using stems and case insensitives. still preserve the order """
-    stem_lower_flat_list=list(flat_list)
-    non_repeated_flat_list=list()
-    stem_lower_flat_list=[stem_a_phrase(x) for x in stem_lower_flat_list]
-    marker=set()
-    for i in range(len(flat_list)):
-        if stem_lower_flat_list[i] not in marker:
-            non_repeated_flat_list.append(flat_list[i])
-            marker.add(stem_lower_flat_list[i])
-    return non_repeated_flat_list
-
-
-def concat_two_list_to_flat (category_dict_final, nea_keywords):
-    """helper functions,just add another list and flatten the list with unique elements only """
-    flat_list = [item for category_dict_final in category_dict_final for item in category_dict_final]
-    flat_list=list(set(flat_list))
-    nea_keywords=list(set(nea_keywords))
-    flat_list=list(set(flat_list+nea_keywords))
-    return flat_list
-
-
-def remove_special_reddit_reference(mystring):
-    """for all quotes within '>xxxx\n' format """
-    start = mystring.find( '>' )
-    end = mystring.find( '\n' )
-    if start != -1 and end != -1:
-        result=mystring[0:start]+mystring[end: len(mystring)].strip()
-    else:
-        result=mystring
-
-    regex = re.compile('[@_!#$%^&*()<>?/\|}{~:]')
-    if regex.search(result[0]) == None:
-        result=result
-    else:
-        result=result[1:]
-    return result
-
-
-def remove_urls (vTEXT):
-    vTEXT = re.sub(r'(https|http)?:\/\/(\w|\.|\/|\?|\=|\&|\%)*\b', '', vTEXT, flags=re.MULTILINE)
-    return(vTEXT)
-
-
-def remove_parathesis(para):
-    para = re.sub(re.escape("("), '', para)
-    para = re.sub(re.escape(")"), '', para)
-    para = re.sub(re.escape("["), '', para)
-    para = re.sub(re.escape("]"), '', para)
-    return para
-
-
-def clean_reddit_post_format(para):
-    para = para.replace("\n", "")
-    para = re.sub(r'\[[0-9]*\]', ' ', para)
-    para = re.sub(r'\s+', ' ', para)
-    return para
-
-def deEmojify(text):
-    regrex_pattern = re.compile(pattern = "["
-        u"\U0001F600-\U0001F64F"  # emoticons
-        u"\U0001F300-\U0001F5FF"  # symbols & pictographs
-        u"\U0001F680-\U0001F6FF"  # transport & map symbols
-        u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
-                           "]+", flags = re.UNICODE)
-    return regrex_pattern.sub(r'',text)
-
-def remove_special_char(x):
-    return ''.join(e for e in x if e.isalnum())
