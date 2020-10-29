@@ -19,8 +19,10 @@ collections <br />
 transformers <br />
 torch <br />
 
-For Spacy, we need to download additional two libraries, by typing: 
-python -m spacy download en_vectors_web_lg
-python -m spacy download en_core_web_lg
+For Spacy, we need to download additional two libraries, by typing: <br />
+python -m spacy download en_vectors_web_lg <br />
+python -m spacy download en_core_web_lg <br />
+
+Current version only works for Whatsapp US. If there are languages other than English, the sentiment and the initiation score could be off. 
 
 If you run into any questions, email me at luyilousia@gmail.com
