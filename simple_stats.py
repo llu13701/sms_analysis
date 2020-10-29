@@ -6,8 +6,9 @@ Created on Tue Sep  1 23:27:36 2020
 @author: louisalu
 """
 
-#import os
+import os
 #os.chdir("/Users/louisalu/Documents/text/text_analyzer")
+os.chdir(os.getcwd())
 import pandas as pd
 from matplotlib import pyplot as plt
 
@@ -274,7 +275,6 @@ def stats_collections(direct_process=True):
     outgoing_name = input("Please enter your whatsapp name: ")
 
     if direct_process==True:
-        file_name='_chat'
         raw_data=whatapp_export_processing(file_name, outgoing_name)
     else:   
         raw_data=pd.read_csv(file_name)
