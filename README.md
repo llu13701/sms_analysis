@@ -1,7 +1,7 @@
 # sms_analysis
 A stats analysis on how much you text to your friend. (Whatsapp only)
 
-For those who would like to get it run on the cloud, check out http://bluetick.group/
+For those who would like to get it run on the cloud, I have a website setup here: check out http://bluetick.group/
 
 Step 0:
 Collecting whatsapp chat message history. For details, please refer to this link: https://www.zapptales.com/en/how-to-export-whatsapp-chat-android-iphone-ios/.Unzip the file.
