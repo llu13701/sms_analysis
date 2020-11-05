@@ -30,7 +30,7 @@ def convert_type(x, criterion=0):
 %d/%m/%Y, %H:%M #%H is 24 hour
 '''
 
-def whatapp_export_processing(file_name, my_name, date_format='%d/%m/%Y, %H:%M'):
+def whatapp_export_processing(file_name, my_name, date_format):
     """this is the whatspp direct download, file name by default is _chat.txt"""
     a_file = open(file_name, "r")
     list_of_lists = []
@@ -54,7 +54,7 @@ def whatapp_export_processing(file_name, my_name, date_format='%d/%m/%Y, %H:%M')
     average_length=sum([len(x[0]) for x in first_split])/len(first_split)
     for i in range(0, len(first_split)):
         check_item=first_split[i][0]
-        if abs(len(check_item)-average_length)<4:
+        if abs(len(check_item)-average_length)<2:
             check_item=re.sub('[^A-Za-z0-9]+', '', check_item)
             numbers = sum(c.isdigit() for c in check_item)
             if numbers/(len(check_item)+0.0001)>0.45:
