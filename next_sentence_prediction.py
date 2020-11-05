@@ -34,13 +34,16 @@ def text_cleaning_master(prompt):
 def next_sentence_prediction(prompt,next_sentence):
     #################################################
     #this is bert approach
-    encoding = tokenizer(prompt, next_sentence, return_tensors='pt')
-    outputs = model(**encoding, next_sentence_label=torch.LongTensor([1]))
-    logits = outputs.logits
-    #'assert logits[0, 0] < logits[0, 1] # next sentence was random
-    if logits[0, 0] < logits[0, 1]:
-        response=False
-    else:
+    try: #cant figure out the truncate issue here, get error_doc   
+        encoding = tokenizer(prompt, next_sentence, return_tensors='pt')
+        outputs = model(**encoding, next_sentence_label=torch.LongTensor([1]))
+        logits = outputs.logits
+        #'assert logits[0, 0] < logits[0, 1] # next sentence was random
+        if logits[0, 0] < logits[0, 1]:
+            response=False
+        else:
+            response=True
+    except:
         response=True
     
     return response

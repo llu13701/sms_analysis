@@ -24,7 +24,7 @@ import matplotlib.backends.backend_pdf
 from holy_grail import add_block_conv, holy_grail_analysis, scoring_holy_grail_normal
 from preprocessing_script import whatapp_export_processing
 
-
+#
 
 def time_conversion(x):
     temp_date=datetime.strptime(x, '%Y-%m-%d %H:%M:%S').timestamp()
@@ -272,7 +272,7 @@ def summary_analytical(pd_text, pd_master,file_name,nr_outgoing_again_Index,nr_i
         pdf.savefig( fig )
     pdf.close()
 
-def stats_collections(direct_process=True):
+def stats_collections(direct_process=True ):
     #a simple dashboard of the past text analysis##
     #file_name='Messages.csv'
 
@@ -283,7 +283,9 @@ def stats_collections(direct_process=True):
         raw_data=whatapp_export_processing(file_name, outgoing_name)
     else:   
         raw_data=pd.read_csv(file_name)
-
+        
+    original_file_name=file_name
+    
     pd_text=raw_data[['Message Date', 'Type','Text']]
     pd_master, nr_outgoing_again_Index,nr_incoming_again_Index, guy_initiation_index,girl_initiation_index=\
     generate_master_summary(pd_text)
@@ -295,5 +297,9 @@ def stats_collections(direct_process=True):
     file_name=file_name.replace('.csv', '')
     summary_analytical(pd_text, pd_master,file_name, nr_outgoing_again_Index,nr_incoming_again_Index, guy_initiation_index,girl_initiation_index)
 
+
+    
+    
+    
 if __name__ == "__main__":
     stats_collections()
