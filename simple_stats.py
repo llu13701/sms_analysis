@@ -93,6 +93,11 @@ def categorization_him_me(first_conversation,him_initiation,her_initiation):
 def count_attachment(pd_day_text, msg_type='Incoming'):
     all_incoming_msg=pd_day_text.loc[pd_day_text.Type==msg_type, :]
     all_incoming_msg_no_attachment = all_incoming_msg[all_incoming_msg['Text'].notna()]
+
+    #adding the other attachment
+    all_incoming_msg_no_attachment=all_incoming_msg_no_attachment[~all_incoming_msg_no_attachment.Text.str.contains('<Multimedia')]
+    all_incoming_msg_no_attachment=all_incoming_msg_no_attachment[~all_incoming_msg_no_attachment.Text.str.contains('<Media')]
+
     pd_day_text.reset_index(drop=True, inplace=True)
     attachment_number=len(all_incoming_msg)-len(all_incoming_msg_no_attachment)
     all_incoming_msg_no_link=all_incoming_msg_no_attachment[~all_incoming_msg_no_attachment.Text.str.contains('www.')]
