@@ -4,7 +4,8 @@ A stats analysis on how much you text to your friend. (Whatsapp only)
 For those who would like to get it run on the cloud, I have a website setup here: check out http://bluetick.group/
 
 Step 0:
-Collecting whatsapp chat message history. For details, please refer to this link: https://www.zapptales.com/en/how-to-export-whatsapp-chat-android-iphone-ios/.Unzip the file.
+Collecting whatsapp chat message history. For details, please refer to this link: https://www.zapptales.com/en/how-to-export-whatsapp-chat-android-iphone-ios/
+unzip the file
 
 Step 1:
 Run the simple_stats.py and the program will prompt you enter the text file and your name. The file needs to have at least 10 days of chatting history in order to generate the summary pdf report.
