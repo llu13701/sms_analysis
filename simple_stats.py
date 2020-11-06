@@ -9,6 +9,7 @@ Created on Tue Sep  1 23:27:36 2020
 import os
 #os.chdir("/Users/louisalu/Documents/text/text_analyzer")
 os.chdir(os.getcwd())
+
 import pandas as pd
 from matplotlib import pyplot as plt
 
@@ -272,18 +273,27 @@ def summary_analytical(pd_text, pd_master,file_name,nr_outgoing_again_Index,nr_i
         pdf.savefig( fig )
     pdf.close()
 
-def stats_collections(direct_process=True ):
+def stats_collections(direct_process=True):
     #a simple dashboard of the past text analysis##
     #file_name='Messages.csv'
 
     file_name = input("Enter your whatapp chat filename (ending in txt): ")
     outgoing_name = input("Please enter your whatsapp name: ")
-
+    date_format=input ("enter your data format: ")
+    
+    '''
+    choices include:
+    #refer here: https://docs.python.org/3/library/datetime.html
+    %m/%d/%y, %I:%M:%S %p
+    %d/%m/%Y, %H:%M #%H is 24 hour
+    '''
+    
     if direct_process==True:
-        raw_data=whatapp_export_processing(file_name, outgoing_name)
+        raw_data=whatapp_export_processing(file_name, outgoing_name,date_format)
     else:   
         raw_data=pd.read_csv(file_name)
         
+    print ("finish processing")
     original_file_name=file_name
     
     pd_text=raw_data[['Message Date', 'Type','Text']]
@@ -299,7 +309,7 @@ def stats_collections(direct_process=True ):
 
 
     
-    
+
     
 if __name__ == "__main__":
     stats_collections()

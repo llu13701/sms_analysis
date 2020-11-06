@@ -36,7 +36,11 @@ def bert_sentiment(list_of_entire_text):
         doc_prompt=nlp_name(sentence)
         prompt_sentence_list=[sent for sent in doc_prompt.sents]
         sentiment_total=[]
-        sentiment_total=[bert_nlp(x.text)[0]['label'] for x in prompt_sentence_list]
+        for x in prompt_sentence_list:
+            try:
+                sentiment_total.append(bert_nlp(x.text)[0]['label'])
+            except:
+                sentiment_total.append('POSITIVE')
         neg_count=sentiment_total.count('NEGATIVE')
         pos_count=sentiment_total.count('POSITIVE')
         sentiment=(pos_count)/(neg_count+pos_count+0.001)
