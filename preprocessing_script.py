@@ -57,7 +57,8 @@ def whatapp_export_processing(file_name, my_name, date_format):
         if abs(len(check_item)-average_length)<2:
             check_item=re.sub('[^A-Za-z0-9]+', '', check_item)
             numbers = sum(c.isdigit() for c in check_item)
-            if numbers/(len(check_item)+0.0001)>0.45:
+            others=len(check_item)-numbers
+            if numbers/(len(check_item)+0.0001)>0.45 and others<4:
                 final_first_split.append(first_split[i])
     
     first_split=final_first_split
