@@ -1,4 +1,4 @@
-# For those who would like to get it run on the cloud, I have a website setup here: check out http://bluetick.group/
+# For those who would like to try it out without running the code, I have a website setup here: check out http://bluetick.group/
 
 ## sms_analysis
 
