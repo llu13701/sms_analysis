@@ -1,7 +1,6 @@
-# sms_analysis
+# For those who would like to get it run on the cloud, I have a website setup here: check out http://bluetick.group/
 
-#For those who would like to get it run on the cloud, I have a website setup here: check out http://bluetick.group/
-
+## sms_analysis
 
 A stats analysis on how much you text to your friend. (Whatsapp only)
 
