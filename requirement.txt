@@ -1,0 +1,8 @@
+pandas
+matplotlib
+emoji
+spacy
+nltk
+collections
+transformers
+torch
