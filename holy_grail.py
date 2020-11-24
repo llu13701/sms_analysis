@@ -66,14 +66,15 @@ def holy_grail_analysis(pd_text, method='naive', conversation_cutoff=30, rolling
     #would want to score the block conversation based on interaction ratios:
     else:
         final_score=scoring_holy_grail_normal(pd_text)
+        final_score=final_score.sort_index()
+        
         top_conversation= extract_details_conv_on_block_number(final_score, pd_text, item_range=10)
         print ("here are some of the top conversations: adjusted by iteraction ratio scores\n")
         print (top_conversation)
-        fig, axs = plt.subplots(2, sharex=True, squeeze=True)
-        final_score=final_score.sort_index()
-        rolling_mean=final_score.rolling(rolling_avg).mean()
-        axs[0].plot(final_score.index, final_score.values)
-        axs[0].set_title('Holy Grail Interaction Score')
-        axs[1].plot(final_score.index, rolling_mean)
-        axs[1].set_title('Holy Grail Interaction Score (rolling avg)')
+                
+        fig = plt.figure()
+        plt.plot(final_score.index, final_score.rolling(rolling_avg).mean())
+        plt.title('Holy Grail Interaction Score (rolling avg)')
+        fig.autofmt_xdate()
+    
     return fig
