@@ -98,6 +98,10 @@ def create_adjusted_sent_info(pd_text):
     original_target=pd_adjusted_sent.loc[0, 'Type']
 
     while i < len(pd_adjusted_sent):
+        if pd_adjusted_sent.loc[i, 'Type'] not in ['Outgoing', 'Incoming']:
+            pd_adjusted_sent.loc[i, 'Type']='Outgoing'
+            print ("something wrong, change the text type")
+        
         if pd_adjusted_sent.loc[i, 'Type']==original_target:
             pd_final_adjusted_sent=pd_final_adjusted_sent.append(pd_adjusted_sent.loc[i, ])
             i=i+1

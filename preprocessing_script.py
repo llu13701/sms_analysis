@@ -156,25 +156,23 @@ def whatapp_export_processing(file_name, my_name):
         split_symbol=' - '
     
     first_split=[x.split(split_symbol) for x in list_of_lists]
-    #check for validation for the first_split
-    final_first_split=[]
-    average_length=statistics.median([len(x[0]) for x in first_split])
-    for i in range(0, len(first_split)):
-        check_item=first_split[i][0]
-        if abs(len(check_item)-average_length)<2:
-            check_item=re.sub('[^A-Za-z0-9]+', '', check_item)
-            numbers = sum(c.isdigit() for c in check_item)
-            others=len(check_item)-numbers
-            if numbers/(len(check_item)+0.0001)>0.45 and others<4:
-                final_first_split.append(first_split[i])
-    
-    first_split=final_first_split
-    
+
     date_time_list=[x[0].replace("[", "").strip() for x in first_split]
     date_time_list=[x.replace("\u200e", "") for x  in date_time_list]    
     date_format=determine_right_dateformat(date_time_list)
-
-
+    print ("file date_format is ", date_format)
+    
+    final_first_split=[]
+    for i in range(0, len(first_split)):
+        try:
+            datetime.strptime(first_split[i][0].replace("[", "").strip(), date_format).strftime('%Y-%m-%d %H:%M:%S')
+            final_first_split.append(first_split[i])
+        except:
+            i
+    
+    first_split=final_first_split
+    date_time_list=[x[0].replace("[", "").strip() for x in first_split]
+    date_time_list=[x.replace("\u200e", "") for x  in date_time_list]    
     new_date_time_list=[]
     for i in range(len(date_time_list)):
         new_date_time_list.append(datetime.strptime(date_time_list[i], date_format).strftime('%Y-%m-%d %H:%M:%S'))

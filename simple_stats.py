@@ -214,7 +214,10 @@ def generating_analytical(pd_day_text, pd_master, date,initial_time, initial_tim
     new_topic= identify_initiation_with_new_topic(initiator, initial_time_index, nr_incoming_again_Index, guy_initiation_index, nr_outgoing_again_Index, girl_initiation_index)
     attachment_number_him, list_text_him=count_attachment(pd_day_text, msg_type='Incoming')
     attachment_number_her, list_text_her=count_attachment(pd_day_text, msg_type='Outgoing')
-    topic_summary= summary_topic(list_text_him)
+    try:
+        topic_summary= summary_topic(list_text_him)
+    except:
+        topic_summary=''
     
     all_incoming_msg=pd_day_text.loc[pd_day_text.Type=='Incoming', :]
     all_incoming_msg_text=[x for x in all_incoming_msg['Text'] if x==x]
@@ -301,7 +304,6 @@ def generate_master_summary(pd_text):
                                         text_sentiment_pair, custom_stopwords)
         
     return pd_master, nr_outgoing_again_Index,nr_incoming_again_Index, guy_initiation_index,girl_initiation_index
-
 
 
 def summary_analytical(pd_text, pd_master,file_name,nr_outgoing_again_Index,nr_incoming_again_Index, guy_initiation_index,girl_initiation_index):
@@ -409,6 +411,7 @@ def summary_analytical(pd_text, pd_master,file_name,nr_outgoing_again_Index,nr_i
     fig8.autofmt_xdate()
     all_figure.append(fig8)
 
+
     #count emoji
     pd_master['total_attachment_him']=pd_master['Emoji_partner']+pd_master['Attachment_partner']
     pd_master['total_attachment_her']=pd_master['Emoji_me']+pd_master['Attachment_me']
@@ -455,10 +458,9 @@ def summary_analytical(pd_text, pd_master,file_name,nr_outgoing_again_Index,nr_i
     pd_master['mms_ratio']-pd_master['rolling_gnat_perctg']
     
     fig5d = plt.figure()
-    plt.plot(pd_master['Date'], pd_master['final_score'], '-b',label='current' )
-    plt.plot(pd_master['Date'], pd_master['final_score'].rolling(7).mean(), '-r', label='7d-average')
-    plt.title('Final Quality Score (7d Avg)')
-
+    plt.plot(pd_master['Date'], pd_master['final_score'], '-b', label='current')
+    plt.plot(pd_master['Date'], pd_master['final_score'].rolling(7).mean(), '-r', label='7d avg')
+    plt.title('Ultimate Text Indicator')    
     leg = plt.legend();
     fig5d.autofmt_xdate()
     all_figure=[fig5d]+all_figure
@@ -499,6 +501,8 @@ def stats_collections(direct_process=True):
     file_name=file_name.replace('.csv', '')
     file_name="new_"+file_name
     summary_analytical(pd_text, pd_master,file_name, nr_outgoing_again_Index,nr_incoming_again_Index, guy_initiation_index,girl_initiation_index)
+    print ("success!")
+
     
 if __name__ == "__main__":
     stats_collections()

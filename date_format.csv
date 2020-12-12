@@ -166,3 +166,7 @@
 %Y/%b/%d, %I:%M %p
 %y/%m/%d, %I:%M %p
 %Y/%m/%d, %I:%M %p
+%d. %m. %Y. %H:%M
+%d.%m.%Y %H:%M:%S
+%d/%m/%y %I:%M %p
+%d/%m/%y %H:%M
