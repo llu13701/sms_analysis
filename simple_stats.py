@@ -7,7 +7,7 @@ Created on Tue Sep  1 23:27:36 2020
 """
 
 import os
-#os.chdir("/Users/louisalu/Documents/text/text_analyzer")
+#os.chdir("/Users/louisalu/Documents/text/sms_analysis")
 os.chdir(os.getcwd())
 
 import pandas as pd

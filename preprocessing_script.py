@@ -41,13 +41,23 @@ def convert_type(x, criterion=0):
 '''
 
 def input_into_list(file_name):
-    a_file = open(file_name, "r")
+    a_file = open(SAVE_FOLDER+file_name, "rb")
     list_of_lists = []
     for line in a_file:
-      stripped_line = line.strip()
-      list_of_lists.append(stripped_line)
+      try:
+          stripped_line = line.strip()
+          list_of_lists.append(stripped_line)
+      except:
+          stripped_line=''
     a_file.close()
-    return list_of_lists
+    final_list=[]
+    for i in range(0, len(list_of_lists)):
+        try:
+            final_list.append(list_of_lists[i].decode("utf-8"))
+        except:
+            empty_string=1
+            
+    return final_list
 
 list_of_date_format=input_into_list("date_format.csv")
 
@@ -76,6 +86,7 @@ def determine_right_dateformat(list_of_lists):
 def messenger_export_processing(file_name, my_name, special_removal=['']):
     list_of_lists=input_into_list(file_name)
     list_of_lists=[x for x in list_of_lists if not x in special_removal]
+     
     date_format=determine_right_dateformat(list_of_lists)
     #try go find the first line with the date on
     print ("date_format for the file is ",date_format)
@@ -149,6 +160,9 @@ def whatapp_export_processing(file_name, my_name):
     list_of_lists=list_of_lists[1:]
     pd_conv=pd.DataFrame()
     
+    list_of_lists=[x.replace("a.m.", "AM") for x in list_of_lists]
+    list_of_lists=[x.replace("p.m.", "PM") for x in list_of_lists]
+
     #checking split symbol
     if '[' in list_of_lists[0][0:9]:
         split_symbol=']'
@@ -212,7 +226,7 @@ def master_preprocessing_script(file_name, my_name, special_removal=['']):
             pd_conv= messenger_export_processing(file_name, my_name,special_removal)
 
     return pd_conv
-        
+
 
 
 
