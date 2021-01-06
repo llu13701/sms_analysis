@@ -170,3 +170,6 @@
 %d.%m.%Y %H:%M:%S
 %d/%m/%y %I:%M %p
 %d/%m/%y %H:%M
+%Y-%m-%d %I:%M %p
+%m/%d/%Y %H:%M
+%Y/%m/%d %H:%M:%S
