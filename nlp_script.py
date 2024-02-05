@@ -11,7 +11,7 @@ from math import ceil
 import pandas as pd
 
 import spacy
-nlp = spacy.load("en_vectors_web_lg")
+nlp = spacy.load("en_core_web_lg")
 pd_echo_lib=pd.read_csv("common_text.csv")
 pd_echo_lib=pd_echo_lib.fillna(0)
 
