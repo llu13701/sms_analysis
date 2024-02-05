@@ -58,6 +58,8 @@ def identify_custom_stopwords(list_of_sentence):
     one_stdev=statistics.mean(diff)-0.7*statistics.stdev(diff)
     diff_cutoff=len([x for x in diff if x < one_stdev])
     total_stopwords=[x[0] for x in counter[0:diff_cutoff]]
+    #['i', 'to', 'you', 'the', '\u200emissed', 'voice', 'my', 'call.', 
+    # 'a', 'and', 'is', 'of', 'for', 'in', 'call', 'me', 'your', 'will', 'bro.', 'this', 'are']
     return total_stopwords
 
 def remove_stopwords_inlist(list_of_sentence,custom_stopwords):
