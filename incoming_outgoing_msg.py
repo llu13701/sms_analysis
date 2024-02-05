@@ -54,7 +54,6 @@ def identify_custom_stopwords(list_of_sentence):
     list_of_count_shift_one.append(0)
     #list_of count is the count of each word, list_of_count_shift_one is the count of each word shifted by one
     diff=[x-y for x, y in list(zip(list_of_count_shift_one,list_of_count))]
-    breakpoint()
     one_stdev=statistics.mean(diff)-0.7*statistics.stdev(diff)
     diff_cutoff=len([x for x in diff if x < one_stdev])
     total_stopwords=[x[0] for x in counter[0:diff_cutoff]]
