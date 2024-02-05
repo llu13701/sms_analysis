@@ -41,7 +41,7 @@ def convert_type(x, criterion=0):
 '''
 
 def input_into_list(file_name):
-    a_file = open("/Users/gozieonyia/Code/sms-analysis/sms_analysis/"+file_name, "rb")
+    a_file = open(SAVE_FOLDER+file_name, "rb")
     list_of_lists = []
     for line in a_file:
       try:
