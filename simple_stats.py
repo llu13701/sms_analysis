@@ -226,7 +226,6 @@ def generating_analytical(pd_day_text, pd_master, date,initial_time, initial_tim
     all_incoming_msg=pd_day_text.loc[pd_day_text.Type=='Incoming', :]
     all_incoming_msg_text=[x for x in all_incoming_msg['Text'] if x==x]
     emoji_count_him = len(re.findall(emoji_regex, " ".join(all_incoming_msg_text)))
-    breakpoint()
 
     
     all_outgoing_msg=pd_day_text.loc[pd_day_text.Type=='Outgoing', :]
@@ -308,7 +307,7 @@ def generate_master_summary(pd_text):
         pd_master=generating_analytical(pd_day_text, pd_master,date,initial_time, initial_time_index,end_time,\
                                         nr_incoming_again_Index,guy_initiation_index, nr_outgoing_again_Index, girl_initiation_index,\
                                         text_sentiment_pair, custom_stopwords)
-        
+    breakpoint()
     return pd_master, nr_outgoing_again_Index,nr_incoming_again_Index, guy_initiation_index,girl_initiation_index
 
 
