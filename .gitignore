@@ -1,6 +1,3 @@
-_chat.txt
-chinedu_chat.txt
-chinedu_chat.csv
-_chat.csv
-.gitignore
+*.csv
+*.txt
 *.pyc 
