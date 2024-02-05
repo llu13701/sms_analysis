@@ -13,6 +13,7 @@ os.chdir(os.getcwd())
 import pandas as pd
 from matplotlib import pyplot as plt
 import numpy as np
+import re
 import collections
 
 from incoming_outgoing_msg import count_total_incoming_outgoing_words, create_adjusted_sent_info, \
@@ -188,6 +189,9 @@ def calculate_reponse_time(pd_day_text,nr_outgoing_again_Index,girl_initiation_i
 
 
 def generating_analytical(pd_day_text, pd_master, date,initial_time, initial_time_index,end_time, nr_incoming_again_Index,guy_initiation_index, nr_outgoing_again_Index, girl_initiation_index, text_sentiment_pair, custom_stopwords):
+    emoji_regex = r"[\U0001F600-\U0001F64F\U0001F300-\U0001F3FF\U0001F1E0-\U0001F1FF\U0001F400-\U0001F6FF\U0001F700-\U0001F77F\U0001F900-\U0001F9FF\U0001F300-\U0001F3FF\u2702-\u27B0]"
+
+
     send_by_him,send_by_me,fig= count_number_of_incoming_outcoming(pd_day_text,pd_master, to_graph=False)
     raw_ratio=send_by_him/send_by_me
     
@@ -221,12 +225,12 @@ def generating_analytical(pd_day_text, pd_master, date,initial_time, initial_tim
     
     all_incoming_msg=pd_day_text.loc[pd_day_text.Type=='Incoming', :]
     all_incoming_msg_text=[x for x in all_incoming_msg['Text'] if x==x]
-    emoji_count_him=len([c for c in " ".join(all_incoming_msg_text) if c in emoji.UNICODE_EMOJI])
+    emoji_count_him = len(re.findall(emoji_regex, " ".join(all_incoming_msg_text)))
+
     
     all_outgoing_msg=pd_day_text.loc[pd_day_text.Type=='Outgoing', :]
     all_outgoing_msg=[x for x in all_outgoing_msg['Text'] if x==x]
-    emoji_count_her=len([c for c in " ".join(all_outgoing_msg) if c in emoji.UNICODE_EMOJI])
-
+    emoji_count_her=len(re.findall(emoji_regex, " ".join(all_incoming_msg_text)))
     sentiment=[x[1] for x in text_sentiment_pair if x[0]==date][0]
     #sentiment_name=[x[1] for x in sentiment_map if x[0] == round(sentiment)][0]
     sentiment=str(sentiment)
@@ -303,7 +307,7 @@ def generate_master_summary(pd_text):
         pd_master=generating_analytical(pd_day_text, pd_master,date,initial_time, initial_time_index,end_time,\
                                         nr_incoming_again_Index,guy_initiation_index, nr_outgoing_again_Index, girl_initiation_index,\
                                         text_sentiment_pair, custom_stopwords)
-        
+    breakpoint()
     return pd_master, nr_outgoing_again_Index,nr_incoming_again_Index, guy_initiation_index,girl_initiation_index
 
 
