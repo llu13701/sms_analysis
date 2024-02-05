@@ -293,6 +293,7 @@ def generate_master_summary(pd_text):
         initial_time_index=all_dates.index[index_date]
 
         all_date_time.reset_index(drop=True, inplace=True)
+
         initial_time=all_date_time[0]
         end_time=all_date_time[len(all_date_time)-1]
         pd_day_text=pd_text.loc[pd_text.Message_Day==date, ]
@@ -481,6 +482,9 @@ def stats_collections(direct_process=True):
     original_file_name=file_name
     
     pd_text=raw_data[['Message Date', 'Type','Text']]
+    # pd text is a table of texts with the following columns:
+    # Message Date |Type  |Text Message_Day  |Message_seconds |message_diff | message_diff_z_score  |block_conv | index_holder
+    print("HELLO",pd_text.head())
     pd_master, nr_outgoing_again_Index,nr_incoming_again_Index, guy_initiation_index,girl_initiation_index=\
     generate_master_summary(pd_text)
     #adjusting the adjusted text ratio for pd_master

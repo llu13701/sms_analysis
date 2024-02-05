@@ -41,17 +41,25 @@ def count_average_incoming_outcoming_length(outgoing_msg,incoming_msg):
 
 
 def identify_custom_stopwords(list_of_sentence):
+    print(type(list_of_sentence))
+    print("MADE IT GANG,",list_of_sentence[0])
     large_document=" ".join (list_of_sentence).split(" ")
+    #the large document is a list of each word in each message in whatsapp output.
     large_document=[x.lower() for x in large_document]
     counter=list(collections. Counter(large_document).items())
+    # counter gives you a list of tuples with each word and its count
     counter=sorted(counter, key=lambda x: x[1], reverse=True)
     list_of_count=[x[1] for x in counter]
     list_of_count_shift_one=list_of_count[1:len(list_of_count)]
     list_of_count_shift_one.append(0)
+    #list_of count is the count of each word, list_of_count_shift_one is the count of each word shifted by one
     diff=[x-y for x, y in list(zip(list_of_count_shift_one,list_of_count))]
+    breakpoint()
     one_stdev=statistics.mean(diff)-0.7*statistics.stdev(diff)
     diff_cutoff=len([x for x in diff if x < one_stdev])
     total_stopwords=[x[0] for x in counter[0:diff_cutoff]]
+    #['i', 'to', 'you', 'the', '\u200emissed', 'voice', 'my', 'call.', 
+    # 'a', 'and', 'is', 'of', 'for', 'in', 'call', 'me', 'your', 'will', 'bro.', 'this', 'are']
     return total_stopwords
 
 def remove_stopwords_inlist(list_of_sentence,custom_stopwords):
@@ -128,7 +136,7 @@ def message_ratio_ordered_adjusted(pd_adjusted_text, adjustment_type='Count'):
 
 
 def count_number_of_incoming_outcoming(pd_text,pd_master, to_graph=True):
-    outgoing_msg_count=pd_text[pd_text['Type']=='Outgoing'].Text.count()
+    outgoing_msg_count=pd_text[pd_text['Type']=='Outgoing'].Text.count()+1 #to avoid divide by zero
     incoming_msg_count=pd_text[pd_text['Type']=='Incoming'].Text.count()
     fig=''
     if to_graph:
